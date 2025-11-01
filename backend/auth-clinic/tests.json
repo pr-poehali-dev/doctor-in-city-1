@@ -1,0 +1,78 @@
+{
+  "tests": [
+    {
+      "name": "Register new clinic",
+      "method": "POST",
+      "body": {
+        "action": "register",
+        "clinic_name": "Тестовая клиника №1",
+        "email": "test@clinic.ru",
+        "phone": "+79001234567",
+        "region": "Московская область",
+        "city": "Москва",
+        "password": "SecurePass123!",
+        "contact_person_name": "Иванов Иван Иванович",
+        "contact_person_position": "Главный врач",
+        "terms_accepted": true,
+        "data_processing_accepted": true
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "success": true,
+        "message": "string",
+        "clinic": "object",
+        "token": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with correct credentials",
+      "method": "POST",
+      "body": {
+        "action": "login",
+        "email": "test@clinic.ru",
+        "password": "SecurePass123!"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "message": "string",
+        "clinic": "object",
+        "token": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with wrong password",
+      "method": "POST",
+      "body": {
+        "action": "login",
+        "email": "test@clinic.ru",
+        "password": "WrongPassword"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Register without required fields",
+      "method": "POST",
+      "body": {
+        "action": "register",
+        "email": "incomplete@clinic.ru"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "expectedStatus": 200
+    }
+  ]
+}
