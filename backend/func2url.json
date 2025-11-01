@@ -1,4 +1,6 @@
 {
+  "admin-doctors": "https://functions.poehali.dev/f09a060e-852c-47b9-a4d3-365486cdef40",
+  "admin-clinics": "https://functions.poehali.dev/ebb3832c-7439-47b5-8de3-f58e540fed53",
   "auth-admin": "https://functions.poehali.dev/ba22e1ce-c818-4930-95ec-d5347d2618a4",
   "auth-clinic": "https://functions.poehali.dev/6922d8a2-b7cf-493e-9c52-ff926612176d"
 }
