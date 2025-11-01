@@ -443,10 +443,16 @@ const Doctors = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full" variant="outline" onClick={() => setSelectedDoctor(doctor)}>
-                      <Icon name="Eye" className="mr-2" size={18} />
-                      Подробнее
-                    </Button>
+                    <div className="grid grid-cols-2 gap-3 w-full">
+                      <Button variant="outline" onClick={() => setSelectedDoctor(doctor)}>
+                        <Icon name="Eye" className="mr-2" size={18} />
+                        Подробнее
+                      </Button>
+                      <Button onClick={() => handleOrderClick(doctor)}>
+                        <Icon name="CalendarCheck" className="mr-2" size={18} />
+                        Заказать
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -560,20 +566,6 @@ const Doctors = () => {
                   <div className="flex flex-wrap gap-2">
                     {selectedDoctor.servicesProvided.map((service, idx) => (
                       <Badge key={idx} variant="outline" className="bg-blue-50">{service}</Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2 text-blue-900">
-                    <Icon name="Calendar" size={20} />
-                    Ближайшие доступные даты
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedDoctor.dates.map((date, idx) => (
-                      <Badge key={idx} className="bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2 text-base">
-                        {date}.2025
-                      </Badge>
                     ))}
                   </div>
                 </div>
