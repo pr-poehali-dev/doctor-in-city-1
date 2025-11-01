@@ -120,7 +120,7 @@ const Home = () => {
               Организуем выезды высококвалифицированных специалистов из Москвы и опытных врачей частной практики в ваш медицинский центр
             </p>
             <div className="flex gap-4 flex-wrap">
-              <Button size="lg" variant="secondary" onClick={() => navigate('/dashboard')}>
+              <Button size="lg" variant="secondary" onClick={() => navigate('/doctors')}>
                 <Icon name="Users" className="mr-2" size={20} />
                 Посмотреть врачей
               </Button>
