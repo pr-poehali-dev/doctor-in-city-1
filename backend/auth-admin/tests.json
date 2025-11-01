@@ -1,0 +1,65 @@
+{
+  "tests": [
+    {
+      "name": "Login with default admin credentials",
+      "method": "POST",
+      "body": {
+        "action": "login",
+        "email": "admin@doctor-in-city.ru",
+        "password": "Admin123!"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "message": "string",
+        "admin": "object",
+        "token": "string",
+        "user_type": "admin"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with wrong password",
+      "method": "POST",
+      "body": {
+        "action": "login",
+        "email": "admin@doctor-in-city.ru",
+        "password": "WrongPassword"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with non-existent email",
+      "method": "POST",
+      "body": {
+        "action": "login",
+        "email": "nonexistent@test.ru",
+        "password": "anypassword"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Verify valid token",
+      "method": "POST",
+      "body": {
+        "action": "verify",
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.test"
+      },
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "expectedStatus": 200
+    }
+  ]
+}
