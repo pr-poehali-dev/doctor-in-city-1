@@ -104,10 +104,7 @@ const EconomyCalculator = () => {
                 </div>
 
                 <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm">
-                    <Icon name="MinusCircle" size={18} />
-                    Фиксированные расходы на выезд
-                  </h4>
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm">Средние расходы на выезд</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Комиссия врача:</span>
