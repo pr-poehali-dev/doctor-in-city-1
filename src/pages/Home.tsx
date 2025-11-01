@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useNavigate } from "react-router-dom";
+import EconomyCalculator from "@/components/EconomyCalculator";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -200,7 +201,9 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-20 px-6">
+      <EconomyCalculator />
+
+      <section className="py-20 px-6 bg-blue-50 hidden">
         <div className="container mx-auto max-w-5xl">
           <h2 className="text-4xl font-bold text-center mb-4 text-blue-900">Пример экономики успешного выезда специалиста</h2>
           <p className="text-center text-gray-600 mb-12">Прозрачный расчет прибыли для вашего медицинского центра</p>
