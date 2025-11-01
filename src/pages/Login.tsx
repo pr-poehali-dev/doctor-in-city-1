@@ -1,4 +1,5 @@
 import { useState } from "react";
+import funcUrls from '../../backend/func2url.json';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +18,9 @@ const Login = () => {
     remember: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.email || !formData.password) {
@@ -29,17 +32,55 @@ const Login = () => {
       return;
     }
 
-    localStorage.setItem('auth_token', 'mock_jwt_token');
-    localStorage.setItem('clinic_name', 'Медицинский центр "Здоровье"');
-    
-    toast({
-      title: "✅ Вход выполнен!",
-      description: "Перенаправляем в личный кабинет...",
-    });
+    setIsLoading(true);
 
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 1000);
+    try {
+      const response = await fetch(funcUrls['auth-clinic'], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'login',
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "❌ Ошибка входа",
+          description: data.error || "Неверный email или пароль",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('clinic_name', data.clinic.clinic_name);
+      localStorage.setItem('clinic_id', data.clinic.id);
+      localStorage.setItem('clinic_email', data.clinic.email);
+      localStorage.setItem('clinic_status', data.clinic.account_status);
+      
+      toast({
+        title: "✅ Вход выполнен!",
+        description: `Добро пожаловать, ${data.clinic.clinic_name}`,
+      });
+
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } catch (error) {
+      toast({
+        title: "❌ Ошибка соединения",
+        description: "Не удалось подключиться к серверу",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -100,8 +141,15 @@ const Login = () => {
               </Label>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
-              Войти
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Icon name="Loader2" className="mr-2 animate-spin" size={20} />
+                  Вход...
+                </>
+              ) : (
+                "Войти"
+              )}
             </Button>
 
             <p className="text-center text-sm text-gray-600">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import funcUrls from '../../backend/func2url.json';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,12 +17,15 @@ const Register = () => {
     email: "",
     phone: "",
     region: "",
+    city: "",
+    contactPersonName: "",
     password: "",
     confirmPassword: "",
     agreed: false,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -41,7 +45,15 @@ const Register = () => {
     }
 
     if (!formData.region.trim()) {
-      newErrors.region = "Регион/Город обязателен";
+      newErrors.region = "Регион обязателен";
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = "Город обязателен";
+    }
+
+    if (!formData.contactPersonName.trim()) {
+      newErrors.contactPersonName = "ФИО контактного лица обязательно";
     }
 
     if (!formData.password) {
@@ -62,18 +74,65 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (validateForm()) {
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(funcUrls['auth-clinic'], {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'register',
+          clinic_name: formData.clinicName,
+          email: formData.email,
+          phone: formData.phone,
+          region: formData.region,
+          city: formData.city,
+          password: formData.password,
+          contact_person_name: formData.contactPersonName,
+          terms_accepted: formData.agreed,
+          data_processing_accepted: formData.agreed,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "❌ Ошибка регистрации",
+          description: data.error || "Не удалось зарегистрировать клинику",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('clinic_name', data.clinic.clinic_name);
+      localStorage.setItem('clinic_id', data.clinic.id);
+      localStorage.setItem('clinic_email', data.clinic.email);
+
       toast({
         title: "✅ Регистрация успешна!",
-        description: "Теперь вы можете войти в систему",
+        description: "Ваш аккаунт на модерации. Вы можете войти в систему.",
       });
 
       setTimeout(() => {
-        navigate('/login');
+        navigate('/dashboard');
       }, 1500);
+    } catch (error) {
+      toast({
+        title: "❌ Ошибка соединения",
+        description: "Не удалось подключиться к серверу",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -130,17 +189,45 @@ const Register = () => {
               {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="region">Регион *</Label>
+                <Input
+                  id="region"
+                  type="text"
+                  placeholder="Московская область"
+                  value={formData.region}
+                  onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                  className={errors.region ? "border-red-500" : ""}
+                />
+                {errors.region && <p className="text-red-500 text-sm mt-1">{errors.region}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="city">Город *</Label>
+                <Input
+                  id="city"
+                  type="text"
+                  placeholder="Москва"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className={errors.city ? "border-red-500" : ""}
+                />
+                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+              </div>
+            </div>
+
             <div>
-              <Label htmlFor="region">Регион/Город *</Label>
+              <Label htmlFor="contactPersonName">ФИО контактного лица *</Label>
               <Input
-                id="region"
+                id="contactPersonName"
                 type="text"
-                placeholder="Санкт-Петербург"
-                value={formData.region}
-                onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                className={errors.region ? "border-red-500" : ""}
+                placeholder="Иванов Иван Иванович"
+                value={formData.contactPersonName}
+                onChange={(e) => setFormData({ ...formData, contactPersonName: e.target.value })}
+                className={errors.contactPersonName ? "border-red-500" : ""}
               />
-              {errors.region && <p className="text-red-500 text-sm mt-1">{errors.region}</p>}
+              {errors.contactPersonName && <p className="text-red-500 text-sm mt-1">{errors.contactPersonName}</p>}
             </div>
 
             <div>
@@ -181,8 +268,15 @@ const Register = () => {
             </div>
             {errors.agreed && <p className="text-red-500 text-sm">{errors.agreed}</p>}
 
-            <Button type="submit" className="w-full" size="lg">
-              Зарегистрироваться
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Icon name="Loader2" className="mr-2 animate-spin" size={20} />
+                  Регистрация...
+                </>
+              ) : (
+                "Зарегистрироваться"
+              )}
             </Button>
 
             <p className="text-center text-sm text-gray-600">
