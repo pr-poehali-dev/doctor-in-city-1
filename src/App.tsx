@@ -15,6 +15,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
 import AdminClinics from "./pages/AdminClinics";
 import AdminDoctors from "./pages/AdminDoctors";
+import AdminOrders from "./pages/AdminOrders";
 import NotFound from "./pages/NotFound";
 import ProtectedAdminRoute from "./components/auth/ProtectedAdminRoute";
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/admin" element={<ProtectedAdminRoute><Admin /></ProtectedAdminRoute>} />
           <Route path="/admin/clinics" element={<ProtectedAdminRoute><AdminClinics /></ProtectedAdminRoute>} />
           <Route path="/admin/doctors" element={<ProtectedAdminRoute><AdminDoctors /></ProtectedAdminRoute>} />
+          <Route path="/admin/orders" element={<ProtectedAdminRoute><AdminOrders /></ProtectedAdminRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

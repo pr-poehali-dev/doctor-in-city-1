@@ -49,7 +49,7 @@ const Admin = () => {
       icon: "ClipboardList",
       path: "/admin/orders",
       color: "bg-purple-500",
-      available: false,
+      available: true,
     },
     {
       title: "Статистика",
